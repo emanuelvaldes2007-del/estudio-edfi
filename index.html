@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistemas Económicos - Plataforma de Estudio</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts (Outfit & Plus Jakarta Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              300: '#fda4af',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+            },
+            blush: {
+              light: '#fff5f7',
+              card: '#ffffff',
+              accent: '#f472b6',
+              dark: '#831843'
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #fff0f3 0%, #ffe4e6 50%, #fbcfe8 100%);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Custom Glassmorphism Effect */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(251, 113, 133, 0.25);
+      box-shadow: 0 10px 30px -10px rgba(225, 29, 72, 0.08);
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(251, 113, 133, 0.2);
+    }
+
+    /* Flip Card Styles */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+
+    .flip-card-inner {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #ffe4e6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #fb7185;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #e11d48;
+    }
+
+    /* Active Tab Glow */
+    .tab-active {
+      background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+      color: white !important;
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-rose-200 selection:text-rose-900">
+
+  <!-- Header & Navigation -->
+  <header class="sticky top-0 z-50 glass-nav">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-400 flex items-center justify-center text-white shadow-md shadow-rose-300">
+          <i class="fa-solid fa-scale-balanced text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-rose-950 leading-tight">EconoMia <span class="text-rose-500 font-normal">| Study Hub</span></h1>
+          <p class="text-xs text-rose-700/80 font-medium">Sistemas Económicos & Asignación de Recursos</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex bg-rose-100/80 p-1.5 rounded-2xl border border-rose-200 gap-1 w-full md:w-auto overflow-x-auto">
+        <button onclick="switchTab('teoria')" id="tab-teoria" class="tab-btn tab-active px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-book-open text-xs"></i> Resumen Teórico
+        </button>
+        <button onclick="switchTab('flashcards')" id="tab-flashcards" class="tab-btn text-rose-800 hover:text-rose-950 hover:bg-rose-200/50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-clone text-xs"></i> Flashcards
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn text-rose-800 hover:text-rose-950 hover:bg-rose-200/50 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-circle-check text-xs"></i> Cuestionario de Práctica
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-4">
+    <div class="glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden bg-gradient-to-r from-rose-50/90 via-white/80 to-pink-50/90 border-rose-200">
+      <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-rose-300/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute right-12 top-4 text-rose-200 text-8xl opacity-30 pointer-events-none hidden lg:block">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+
+      <div class="relative z-10 max-w-3xl">
+        <span class="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 font-semibold text-xs px-3 py-1 rounded-full border border-rose-200 mb-3">
+          <i class="fa-solid fa-sparkles text-rose-500"></i> Preparación de Evaluación
+        </span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-rose-950 tracking-tight leading-snug">
+          Domina los <span class="bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">Sistemas Económicos</span> de forma clara e interactiva
+        </h2>
+        <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+          Repasa los conceptos teóricos fundamentales, practica con fichas didácticas de respuesta rápida y pon a prueba tus conocimientos con el cuestionario con retroalimentación inmediata.
+        </p>
+
+        <!-- Stats Badges -->
+        <div class="mt-6 flex flex-wrap gap-3 sm:gap-4 text-xs font-semibold text-rose-900">
+          <div class="bg-white/90 border border-rose-200 px-3.5 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-layer-group text-rose-500 text-sm"></i>
+            <span>3 Sistemas Comparados</span>
+          </div>
+          <div class="bg-white/90 border border-rose-200 px-3.5 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-bolt text-amber-500 text-sm"></i>
+            <span>12 Flashcards de Repaso</span>
+          </div>
+          <div class="bg-white/90 border border-rose-200 px-3.5 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-award text-emerald-500 text-sm"></i>
+            <span>10 Preguntas de Evaluación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Container -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-16">
+
+    <!-- ================================================================= -->
+    <!-- SECTION 1: RESUMEN TEÓRICO                                        -->
+    <!-- ================================================================= -->
+    <section id="sec-teoria" class="space-y-8 transition-opacity duration-300">
+      
+      <!-- Bloque 1: El Problema Económico & Factores -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Tarjeta 1: Problema Económico -->
+        <div class="glass-card rounded-3xl p-6 border border-rose-200/80 hover:shadow-lg transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-rose-950">El Problema Económico</h3>
+              <p class="text-xs text-rose-600 font-medium">Escasez y Necesidades</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            La economía surge debido al conflicto fundamental de la condición humana: las <strong>necesidades son ilimitadas y crecientes</strong>, mientras que los <strong>recursos disponibles son escasos y finitos</strong>.
+          </p>
+          <div class="mt-4 bg-rose-50/80 p-3.5 rounded-2xl border border-rose-100 text-xs text-rose-900">
+            <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>
+            <strong>Clave:</strong> Un <em>Sistema Económico</em> es la forma en que una sociedad se organiza institucionalmente para administrar estos recursos escasos y resolver el problema de la escasez.
+          </div>
+        </div>
+
+        <!-- Tarjeta 2: Preguntas Clave -->
+        <div class="glass-card rounded-3xl p-6 border border-rose-200/80 hover:shadow-lg transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-rose-950">3 Preguntas Fundamentales</h3>
+              <p class="text-xs text-rose-600 font-medium">Decisiones que define todo sistema</p>
+            </div>
+          </div>
+          <ul class="space-y-2.5 text-xs sm:text-sm">
+            <li class="flex items-start gap-2.5 p-2 rounded-xl bg-white/70 border border-rose-100">
+              <span class="font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg text-xs">1</span>
+              <div><strong class="text-slate-800">¿Qué producir?</strong> <span class="text-slate-600 block sm:inline">Determinación de qué bienes y servicios generar y en qué cantidad.</span></div>
+            </li>
+            <li class="flex items-start gap-2.5 p-2 rounded-xl bg-white/70 border border-rose-100">
+              <span class="font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg text-xs">2</span>
+              <div><strong class="text-slate-800">¿Cómo producir?</strong> <span class="text-slate-600 block sm:inline">Selección de tecnologías, métodos de producción y uso de factores.</span></div>
+            </li>
+            <li class="flex items-start gap-2.5 p-2 rounded-xl bg-white/70 border border-rose-100">
+              <span class="font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg text-xs">3</span>
+              <div><strong class="text-slate-800">¿Para quién producir?</strong> <span class="text-slate-600 block sm:inline">Criterio de distribución de la riqueza entre los miembros de la sociedad.</span></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tarjeta Factores Productivos -->
+      <div class="glass-card rounded-3xl p-6 border border-rose-200/80">
+        <h3 class="text-lg font-bold text-rose-950 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-cubes text-rose-500"></i> Factores de Producción
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white/80 p-4 rounded-2xl border border-rose-100">
+            <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-1">
+              <i class="fa-solid fa-mountain-sun"></i> Tierra / Naturaleza
+            </div>
+            <p class="text-xs text-slate-600">Recursos naturales disponibles para la producción (minerales, agua, suelo agrícola).</p>
+          </div>
+          <div class="bg-white/80 p-4 rounded-2xl border border-rose-100">
+            <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-1">
+              <i class="fa-solid fa-user-gear"></i> Trabajo
+            </div>
+            <p class="text-xs text-slate-600">Esfuerzo físico y mental que los trabajadores dedican al proceso productivo.</p>
+          </div>
+          <div class="bg-white/80 p-4 rounded-2xl border border-rose-100">
+            <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-1">
+              <i class="fa-solid fa-industry"></i> Capital
+            </div>
+            <p class="text-xs text-slate-600">Maquinarias, herramientas, infraestructuras y equipos creados para producir otros bienes.</p>
+          </div>
+          <div class="bg-white/80 p-4 rounded-2xl border border-rose-100">
+            <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-1">
+              <i class="fa-solid fa-lightbulb"></i> Capacidad Empresarial
+            </div>
+            <p class="text-xs text-slate-600">Habilidad para coordinar y organizar los otros 3 factores con innovación y riesgo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparativa de los 3 Sistemas Económicos principales -->
+      <div>
+        <div class="mb-4">
+          <h3 class="text-xl font-bold text-rose-950 flex items-center gap-2">
+            <i class="fa-solid fa-code-compare text-rose-500"></i> Cuadro Comparativo de Sistemas Económicos
+          </h3>
+          <p class="text-xs text-slate-500">Análisis detallado de los modelos teóricos e históricos</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Sistema de Mercado -->
+          <div class="glass-card rounded-3xl p-6 border-t-4 border-t-sky-400 border-rose-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="bg-sky-100 text-sky-800 font-bold text-xs px-3 py-1 rounded-full">Libre Mercado</span>
+                <i class="fa-solid fa-shop text-sky-500 text-xl"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-1">Capitalismo / Libre Mercado</h4>
+              <p class="text-xs font-semibold text-sky-700 mb-3">Referente Teórico: Adam Smith ("Mano Invisible")</p>
+              
+              <ul class="space-y-2 text-xs text-slate-600 mb-4">
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-sky-500 mt-0.5"></i><span><strong>¿Qué producir?:</strong> Lo que demandan las personas y consumidores en el mercado.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-sky-500 mt-0.5"></i><span><strong>¿Cómo producir?:</strong> Las empresas compiten buscando máxima eficiencia y menor costo.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-sky-500 mt-0.5"></i><span><strong>¿Para quién?:</strong> Para quienes quieran el bien y tengan la capacidad de pagarlo.</span></li>
+              </ul>
+            </div>
+
+            <div class="bg-sky-50/70 p-3 rounded-2xl text-xs space-y-1 text-slate-700 border border-sky-100">
+              <p><strong>Propiedad:</strong> Privada de los medios de producción.</p>
+              <p><strong>Rol del Estado:</strong> Nulo o mínimo (garantizar el orden y la propiedad).</p>
+              <p><strong>Motor:</strong> Búsqueda del beneficio/lucro personal.</p>
+            </div>
+          </div>
+
+          <!-- Sistema Mixto -->
+          <div class="glass-card rounded-3xl p-6 border-t-4 border-t-rose-500 border-rose-200/80 shadow-md flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="bg-rose-100 text-rose-800 font-bold text-xs px-3 py-1 rounded-full">Modelo Mixto</span>
+                <i class="fa-solid fa-handshake text-rose-500 text-xl"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-1">Economía Mixta</h4>
+              <p class="text-xs font-semibold text-rose-700 mb-3">Referente Teórico: John Maynard Keynes</p>
+              
+              <ul class="space-y-2 text-xs text-slate-600 mb-4">
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-rose-500 mt-0.5"></i><span><strong>¿Qué producir?:</strong> Lo que pide el mercado + bienes públicos que fomenta el Estado.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-rose-500 mt-0.5"></i><span><strong>¿Cómo producir?:</strong> Sector privado competitivo regulado por leyes, impuestos y subsidios.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-rose-500 mt-0.5"></i><span><strong>¿Para quién?:</strong> Quienes pagan en mercado + programas de protección social del Estado.</span></li>
+              </ul>
+            </div>
+
+            <div class="bg-rose-50/70 p-3 rounded-2xl text-xs space-y-1 text-slate-700 border border-rose-100">
+              <p><strong>Propiedad:</strong> Predominio privado con presencia/empresas públicas.</p>
+              <p><strong>Rol del Estado:</strong> Regulador, subsidiario, corrige fallas del mercado.</p>
+              <p><strong>Nota:</strong> Es el modelo aplicado en la gran mayoría de países actuales.</p>
+            </div>
+          </div>
+
+          <!-- Planificación Centralizada -->
+          <div class="glass-card rounded-3xl p-6 border-t-4 border-t-purple-500 border-rose-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="bg-purple-100 text-purple-800 font-bold text-xs px-3 py-1 rounded-full">Planificación Central</span>
+                <i class="fa-solid fa-building-flag text-purple-500 text-xl"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-1">Planificación Centralizada</h4>
+              <p class="text-xs font-semibold text-purple-700 mb-3">Referente Teórico: Karl Marx</p>
+              
+              <ul class="space-y-2 text-xs text-slate-600 mb-4">
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-purple-500 mt-0.5"></i><span><strong>¿Qué producir?:</strong> Lo que el Estado planifica y considera socialmente necesario.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-purple-500 mt-0.5"></i><span><strong>¿Cómo producir?:</strong> A través de empresas públicas orientadas al pleno empleo.</span></li>
+                <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-purple-500 mt-0.5"></i><span><strong>¿Para quién?:</strong> Reparto en función de las necesidades según planificación estatal.</span></li>
+              </ul>
+            </div>
+
+            <div class="bg-purple-50/70 p-3 rounded-2xl text-xs space-y-1 text-slate-700 border border-purple-100">
+              <p><strong>Propiedad:</strong> Estatal y colectiva de los medios de producción.</p>
+              <p><strong>Rol del Estado:</strong> Total. Controla precios, salarios y cuotas.</p>
+              <p><strong>Ejemplo Histórico:</strong> URSS (Modelo Soviético de la década de 1920).</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 2: FLASHCARDS INTERACTIVAS                                -->
+    <!-- ================================================================= -->
+    <section id="sec-flashcards" class="hidden space-y-6 transition-opacity duration-300">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-rose-950 flex items-center gap-2">
+            <i class="fa-solid fa-clone text-rose-500"></i> Fichas de Repaso Rápido
+          </h3>
+          <p class="text-xs text-slate-500">Haz clic en cualquier tarjeta para voltearla y ver la respuesta</p>
+        </div>
+        <div class="text-xs text-rose-700 font-semibold bg-rose-100 px-3 py-1.5 rounded-full">
+          💡 Tip: Memoriza los conceptos clave antes del test
+        </div>
+      </div>
+
+      <!-- Grid de Flashcards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="flashcards-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 3: CUESTIONARIO INTERACTIVO DE ALTERNATIVAS               -->
+    <!-- ================================================================= -->
+    <section id="sec-quiz" class="hidden space-y-6 transition-opacity duration-300">
+      
+      <!-- Quiz Header Stats -->
+      <div class="glass-card rounded-3xl p-6 border border-rose-200/80 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Evaluación Formativa</span>
+          <h3 class="text-xl font-bold text-rose-950 mt-1">Test de Alternativas: Sistemas Económicos</h3>
+          <p class="text-xs text-slate-500 mt-1">Responde las preguntas y obtén tu retroalimentación inmediata</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="w-full md:w-64 bg-rose-50 p-3 rounded-2xl border border-rose-100">
+          <div class="flex justify-between text-xs font-bold text-rose-900 mb-1">
+            <span>Progreso</span>
+            <span id="quiz-progress-text">0 / 10</span>
+          </div>
+          <div class="w-full bg-rose-200 h-2.5 rounded-full overflow-hidden">
+            <div id="quiz-progress-bar" class="bg-gradient-to-r from-rose-500 to-pink-500 h-2.5 rounded-full w-0 transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Questions Container -->
+      <div id="quiz-container" class="space-y-6">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+
+      <!-- Quiz Finish Banner (hidden by default) -->
+      <div id="quiz-results" class="hidden glass-card rounded-3xl p-8 text-center border-2 border-rose-300 shadow-xl bg-gradient-to-b from-white to-rose-50">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-rose-500 to-pink-400 text-white flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-rose-300">
+          <i class="fa-solid fa-trophy" id="quiz-result-icon"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-rose-950" id="quiz-result-title">¡Has completado el test!</h3>
+        <p class="text-sm text-slate-600 mt-1" id="quiz-result-subtitle">Revisa tus resultados detallados a continuación</p>
+
+        <div class="my-6 inline-flex items-center gap-6 bg-white px-6 py-4 rounded-2xl border border-rose-200 shadow-sm">
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Puntaje Obtenido</div>
+            <div class="text-3xl font-extrabold text-rose-600" id="quiz-score-num">0/10</div>
+          </div>
+          <div class="w-px h-10 bg-rose-200"></div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Porcentaje</div>
+            <div class="text-3xl font-extrabold text-rose-950" id="quiz-score-percent">0%</div>
+          </div>
+        </div>
+
+        <div class="block">
+          <button onclick="resetQuiz()" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md transition-all flex items-center gap-2 mx-auto">
+            <i class="fa-solid fa-rotate-right"></i> Reintentar Cuestionario
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-rose-200/60 bg-white/60 backdrop-blur-md py-6 text-center text-xs text-rose-800">
+    <div class="max-w-6xl mx-auto px-4">
+      <p class="font-semibold">Plataforma Interactiva de Repaso - Economía Secundaria y Superior</p>
+      <p class="text-slate-500 mt-1">Diseñado con estética Soft Rosé | Contenido alineado al curriculum de Sistemas Económicos</p>
+    </div>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT CODE                                                   -->
+  <!-- ================================================================= -->
+  <script>
+    // --- FLASHCARDS DATA ---
+    const flashcardsData = [
+      {
+        q: "¿Qué es un Sistema Económico?",
+        a: "Es la forma en que una sociedad se organiza institucionalmente para administrar sus recursos escasos y responder a las necesidades de la población.",
+        cat: "Concepto Clave"
+      },
+      {
+        q: "Las 3 Preguntas Económicas",
+        a: "1) ¿Qué producir?\n2) ¿Cómo producir?\n3) ¿Para quién producir?",
+        cat: "Fundamentos"
+      },
+      {
+        q: "Factor de Producción: Capital",
+        a: "Corresponde a las herramientas, maquinarias, edificios e infraestructura utilizadas para fabricar otros bienes o prestar servicios.",
+        cat: "Factores Productivos"
+      },
+      {
+        q: "Referente del Sistema de Mercado",
+        a: "Adam Smith. Promovía la libertad económica, la búsqueda del beneficio personal y la 'Mano Invisible' como reguladora.",
+        cat: "Sistema Mercado"
+      },
+      {
+        q: "¿Cómo fija los precios el Sistema de Mercado?",
+        a: "A través de la Ley de la Oferta y la Demanda, sin intervención directa del Estado.",
+        cat: "Sistema Mercado"
+      },
+      {
+        q: "Rol del Estado en la Economía Mixta",
+        a: "Cumple un rol subsidiario y regulador: interviene para corregir fallas de mercado, redistribuir ingresos y garantizar servicios básicos.",
+        cat: "Sistema Mixto"
+      },
+      {
+        q: "Referente Teórico del Sistema Mixto",
+        a: "John Maynard Keynes. Defendió la intervención del Estado a través del gasto público para estimular la economía en crisis.",
+        cat: "Sistema Mixto"
+      },
+      {
+        q: "Referente de Planificación Centralizada",
+        a: "Karl Marx. Proponía la abolición de la propiedad privada y el control público/estatal de los medios de producción.",
+        cat: "Planificación Central"
+      },
+      {
+        q: "¿Para quién producir en Planificación Central?",
+        a: "Para la población según las necesidades definidas y distribuidas centralmente por el Estado de forma igualitaria.",
+        cat: "Planificación Central"
+      },
+      {
+        q: "Ejemplo Histórico de Planificación Central",
+        a: "La Unión Soviética (URSS) a partir de los años 1920, caracterizada por la colectivización de tierras y planes quinquenales.",
+        cat: "Historia Económica"
+      },
+      {
+        q: "¿Qué es la Escasez en Economía?",
+        a: "Es el carácter limitado de los recursos de la sociedad frente a los deseos y necesidades humanas ilimitadas.",
+        cat: "Fundamentos"
+      },
+      {
+        q: "¿Por qué se dice que casi todas las economías son Mixtas?",
+        a: "Porque en la realidad ningún país aplica un libre mercado puro ni una planificación central absoluta; conviven sector privado y estatal.",
+        cat: "Realidad Actual"
+      }
+    ];
+
+    // --- QUIZ DATA (10 Questions with detailed options & explanations) ---
+    const quizQuestions = [
+      {
+        question: "1. ¿Cuál es el problema fundamental que justifica la existencia de un sistema económico en cualquier sociedad?",
+        options: [
+          "La falta de monedas de cambio y billetes en circulación.",
+          "El conflicto entre necesidades ilimitadas y recursos productivos escasos.",
+          "La existencia de monopolios y grandes empresas internacionales.",
+          "El cobro excesivo de impuestos por parte del Estado."
+        ],
+        correct: 1,
+        explanation: "El problema económico central es la escasez: los recursos son finitos mientras que las necesidades humanas son ilimitadas y crecientes."
+      },
+      {
+        question: "2. En el Sistema de Libre Mercado (Capitalista), ¿quién decide primordialmente QUÉ BIENES producir y en qué cantidad?",
+        options: [
+          "Un ministerio de planificación del gobierno.",
+          "Las preferencias de los consumidores y las decisiones de las empresas privadas mediante los precios.",
+          "Un comité de trabajadores rurales e industriales.",
+          "Las normas internacionales de comercio."
+        ],
+        correct: 1,
+        explanation: "En el libre mercado, la ley de la oferta y la demanda guía lo que se produce en respuesta a los deseos de los consumidores que compran."
+      },
+      {
+        question: "3. ¿Qué pensador económico es ampliamente considerado el principal referente teórico del Sistema de Mercado y promovió la idea de la 'Mano Invisible'?",
+        options: [
+          "Karl Marx",
+          "John Maynard Keynes",
+          "Adam Smith",
+          "David Ricardo"
+        ],
+        correct: 2,
+        explanation: "Adam Smith argumentó en 'La Riqueza de las Naciones' que la búsqueda del beneficio propio en libertad guiaba la economía como por una 'mano invisible'."
+      },
+      {
+        question: "4. Un país donde el Estado planifica las metas de producción industrial, fija los precios de los alimentos y posee todas las tierras agrícolas aplica un sistema de:",
+        options: [
+          "Economía Mixta",
+          "Sistema de Libre Mercado Pureza",
+          "Planificación Centralizada",
+          "Mercantilismo Colonial"
+        ],
+        correct: 2,
+        explanation: "En la planificación centralizada el Estado es el único propietario de los medios de producción y toma las decisiones de qué, cómo y para quién producir."
+      },
+      {
+        question: "5. ¿Cuál es la principal contribución teórica asociadas a John Maynard Keynes sobre el rol del Estado?",
+        options: [
+          "Prohibir por completo la propiedad privada de las fábricas.",
+          "Intervenir mediante el gasto público y regulación para estabilizar la economía y corregir fallas de mercado.",
+          "Eliminar todos los impuestos a las empresas privadas.",
+          "Dejar que el mercado se autorregule sin ninguna norma legal."
+        ],
+        correct: 1,
+        explanation: "Keynes argumentó que en tiempos de crisis el Estado debe intervenir activamente para reactivar la demanda y garantizar el bienestar general."
+      },
+      {
+        question: "6. El factor productivo 'Capital' se refiere correctamente a:",
+        options: [
+          "Exclusivamente al dinero acumulado en bancos.",
+          "Las maquinarias, herramientas, edificios e instalaciones orientadas a la producción.",
+          "Las hectáreas de tierra aptas para cultivo de hortalizas.",
+          "La fuerza de trabajo y horas que entregan los empleados."
+        ],
+        correct: 1,
+        explanation: "En teoría económica, el Capital como factor de producción son los bienes duraderos creados para producir otros bienes o servicios (maquinarias, infraestructura)."
+      },
+      {
+        question: "7. ¿Cómo responde una Economía Mixta a la pregunta '¿Para quién producir'?",
+        options: [
+          "Exclusivamente a quienes tienen el dinero suficiente para pagar precios de mercado.",
+          "Exclusivamente de forma igualitaria fijada por una tarjeta de racionamiento estatal.",
+          "A través del mercado para quienes pueden pagar, complementado con subsidios y salud/educación básica provista por el Estado para quienes lo necesitan.",
+          "Por sorteo público realizado anualmente por las municipalidades."
+        ],
+        correct: 2,
+        explanation: "El sistema mixto combina el criterio de capacidad de pago del mercado con mecanismos de protección social y provisión pública del Estado."
+      },
+      {
+        question: "8. ¿Cuál de los siguientes fue el ejemplo histórico más representativo de la aplicación del Sistema de Planificación Centralizada durante el siglo XX?",
+        options: [
+          "Estados Unidos en la década de 1950.",
+          "La Unión de Repúblicas Socialistas Soviéticas (URSS).",
+          "Reino Unido durante la Revolución Industrial.",
+          "Japón durante su milagro económico."
+        ],
+        correct: 1,
+        explanation: "La Unión Soviética estructuró su economía a través de la planificación central estatal y planes quinquenales desde la década de 1920."
+      },
+      {
+        question: "9. ¿Por qué los economistas afirman que en el mundo real actual la gran mayoría de los países operan bajo un Sistema Mixto?",
+        options: [
+          "Porque todos los países usan la misma moneda.",
+          "Porque no existen modelos puros en la práctica; conviven la iniciativa privada y la intervención/regulación estatal.",
+          "Porque lo exige la Organización de las Naciones Unidas.",
+          "Porque las empresas privadas son dueñas de los gobiernos."
+        ],
+        correct: 1,
+        explanation: "Como señalaban Samuelson y Nordhaus, ninguna sociedad se ajusta 100% a los extremos puros de libre mercado o estado absoluto; todas combinan elementos."
+      },
+      {
+        question: "10. Ticket de Salida: ¿Qué ocurre con la producción cuando aumenta drásticamente la DEMANDA por un producto en un Sistema de Mercado libre?",
+        options: [
+          "El gobierno prohíbe vender ese producto.",
+          "El precio tiende a subir, lo que incentiva a las empresas a producir una mayor cantidad de ese bien.",
+          "La producción se detiene por falta de regulación.",
+          "Las empresas bajan los precios para no tener ganancias excesivas."
+        ],
+        correct: 1,
+        explanation: "En el libre mercado, el aumento de la demanda eleva el precio, enviando una señal a las empresas de que es rentable producir más de dicho producto."
+      }
+    ];
+
+    let userAnswers = new Array(quizQuestions.length).fill(null);
+
+    // --- TAB SWITCHING LOGIC ---
+    function switchTab(tabName) {
+      // Hide all content sections
+      document.getElementById('sec-teoria').classList.add('hidden');
+      document.getElementById('sec-flashcards').classList.add('hidden');
+      document.getElementById('sec-quiz').classList.add('hidden');
+
+      // Reset tab styling
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('text-rose-800', 'hover:text-rose-950', 'hover:bg-rose-200/50');
+      });
+
+      // Show selected content & set active tab style
+      if (tabName === 'teoria') {
+        document.getElementById('sec-teoria').classList.remove('hidden');
+        document.getElementById('tab-teoria').classList.add('tab-active');
+      } else if (tabName === 'flashcards') {
+        document.getElementById('sec-flashcards').classList.remove('hidden');
+        document.getElementById('tab-flashcards').classList.add('tab-active');
+      } else if (tabName === 'quiz') {
+        document.getElementById('sec-quiz').classList.remove('hidden');
+        document.getElementById('tab-quiz').classList.add('tab-active');
+      }
+    }
+
+    // --- RENDER FLASHCARDS ---
+    function renderFlashcards() {
+      const container = document.getElementById('flashcards-container');
+      container.innerHTML = '';
+
+      flashcardsData.forEach((fc, index) => {
+        const cardHTML = `
+          <div onclick="this.classList.toggle('flipped')" class="flip-card perspective-1000 h-52 cursor-pointer group">
+            <div class="flip-card-inner relative w-full h-full rounded-3xl transition-transform duration-500 shadow-sm group-hover:shadow-md">
+              
+              <!-- Front of Card -->
+              <div class="flip-card-front absolute inset-0 glass-card rounded-3xl p-5 flex flex-col justify-between border border-rose-200">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800">${fc.cat}</span>
+                    <span class="text-xs text-rose-400 font-bold">#${index + 1}</span>
+                  </div>
+                  <h4 class="text-base font-bold text-rose-950 mt-2 leading-snug">${fc.q}</h4>
+                </div>
+                <div class="text-xs text-rose-500 font-semibold flex items-center gap-1.5 self-end">
+                  <span>Ver respuesta</span> <i class="fa-solid fa-rotate text-xs"></i>
+                </div>
+              </div>
+
+              <!-- Back of Card -->
+              <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-rose-600 to-pink-700 text-white rounded-3xl p-5 flex flex-col justify-between border border-rose-500 shadow-inner">
+                <div>
+                  <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-rose-100">Respuesta / Concepto</span>
+                  <p class="text-xs sm:text-sm font-medium mt-3 leading-relaxed text-rose-50 whitespace-pre-line">${fc.a}</p>
+                </div>
+                <div class="text-[11px] text-rose-200 flex items-center justify-between pt-2 border-t border-white/20">
+                  <span>Sistemas Económicos</span>
+                  <i class="fa-solid fa-circle-check text-xs"></i>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', cardHTML);
+      });
+    }
+
+    // --- RENDER QUIZ ---
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+
+      quizQuestions.forEach((q, qIndex) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'glass-card rounded-3xl p-6 border border-rose-200/80 space-y-4';
+        qCard.id = `q-card-${qIndex}`;
+
+        let optionsHTML = '';
+        q.options.forEach((opt, optIndex) => {
+          optionsHTML += `
+            <button onclick="selectOption(${qIndex}, ${optIndex})" id="btn-opt-${qIndex}-${optIndex}" class="quiz-opt-btn text-left w-full p-3.5 rounded-2xl border border-rose-100 bg-white/80 hover:bg-rose-50/80 transition-all text-xs sm:text-sm font-medium text-slate-700 flex items-start gap-3">
+              <span class="w-6 h-6 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ${String.fromCharCode(65 + optIndex)}
+              </span>
+              <span class="leading-snug">${opt}</span>
+            </button>
+          `;
+        });
+
+        qCard.innerHTML = `
+          <div class="flex items-start justify-between gap-4">
+            <h4 class="text-sm sm:text-base font-bold text-rose-950">${q.question}</h4>
+            <span class="text-xs font-bold text-rose-400 shrink-0 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-100">P. ${qIndex + 1}</span>
+          </div>
+          <div class="space-y-2.5">
+            ${optionsHTML}
+          </div>
+          <div id="feedback-${qIndex}" class="hidden p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border"></div>
+        `;
+
+        container.appendChild(qCard);
+      });
+    }
+
+    // --- OPTION SELECTION LOGIC ---
+    function selectOption(qIndex, optIndex) {
+      if (userAnswers[qIndex] !== null) return; // Prevent re-answering
+
+      userAnswers[qIndex] = optIndex;
+      const q = quizQuestions[qIndex];
+      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+
+      // Disable all option buttons for this question
+      q.options.forEach((_, idx) => {
+        const btn = document.getElementById(`btn-opt-${qIndex}-${idx}`);
+        btn.disabled = true;
+        btn.classList.add('cursor-not-allowed', 'opacity-75');
+      });
+
+      const selectedBtn = document.getElementById(`btn-opt-${qIndex}-${optIndex}`);
+      const correctBtn = document.getElementById(`btn-opt-${qIndex}-${q.correct}`);
+
+      if (optIndex === q.correct) {
+        // Correct Answer
+        selectedBtn.classList.remove('bg-white/80', 'border-rose-100');
+        selectedBtn.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-950', 'font-semibold');
+        selectedBtn.querySelector('span').classList.replace('bg-rose-100', 'bg-emerald-200');
+        selectedBtn.querySelector('span').classList.replace('text-rose-700', 'text-emerald-800');
+
+        feedbackEl.className = "p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border bg-emerald-50/90 text-emerald-900 border-emerald-200 mt-3";
+        feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-1.5 mb-1 text-emerald-800"><i class="fa-solid fa-circle-check text-emerald-600"></i> ¡Respuesta Correcta!</div>${q.explanation}`;
+      } else {
+        // Incorrect Answer
+        selectedBtn.classList.remove('bg-white/80', 'border-rose-100');
+        selectedBtn.classList.add('bg-rose-100/80', 'border-rose-300', 'text-rose-950');
+
+        correctBtn.classList.remove('bg-white/80', 'border-rose-100');
+        correctBtn.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-950', 'font-semibold');
+
+        feedbackEl.className = "p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border bg-rose-50/90 text-rose-950 border-rose-200 mt-3";
+        feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-1.5 mb-1 text-rose-800"><i class="fa-solid fa-circle-xmark text-rose-600"></i> Incorrecto</div>${q.explanation}`;
+      }
+
+      feedbackEl.classList.remove('hidden');
+      updateProgress();
+    }
+
+    // --- UPDATE QUIZ PROGRESS & RESULTS ---
+    function updateProgress() {
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      const total = quizQuestions.length;
+
+      document.getElementById('quiz-progress-text').innerText = `${answeredCount} / ${total}`;
+      document.getElementById('quiz-progress-bar').style.width = `${(answeredCount / total) * 100}%`;
+
+      // If all answered, display final scorecard
+      if (answeredCount === total) {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      let correctCount = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans === quizQuestions[idx].correct) correctCount++;
+      });
+
+      const percentage = Math.round((correctCount / quizQuestions.length) * 100);
+
+      document.getElementById('quiz-score-num').innerText = `${correctCount} / ${quizQuestions.length}`;
+      document.getElementById('quiz-score-percent').innerText = `${percentage}%`;
+
+      const resultTitle = document.getElementById('quiz-result-title');
+      const resultSubtitle = document.getElementById('quiz-result-subtitle');
+      const resultIcon = document.getElementById('quiz-result-icon');
+
+      if (percentage >= 80) {
+        resultTitle.innerText = "¡Excelente Trabajo! 🌟";
+        resultSubtitle.innerText = "Dominas con claridad los Sistemas Económicos y la asignación de recursos.";
+        resultIcon.className = "fa-solid fa-award";
+      } else if (percentage >= 60) {
+        resultTitle.innerText = "¡Buen Intento! 👍";
+        resultSubtitle.innerText = "Tienes un buen entendimiento básico. Repasa las fichas para perfeccionar los conceptos.";
+        resultIcon.className = "fa-solid fa-thumbs-up";
+      } else {
+        resultTitle.innerText = "Sigue Practicando 📖";
+        resultSubtitle.innerText = "Te recomendamos leer el Resumen Teórico de la Sección 1 antes de intentar nuevamente.";
+        resultIcon.className = "fa-solid fa-book-open-reader";
+      }
+
+      document.getElementById('quiz-results').classList.remove('hidden');
+      document.getElementById('quiz-results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      userAnswers = new Array(quizQuestions.length).fill(null);
+      document.getElementById('quiz-results').classList.add('hidden');
+      document.getElementById('quiz-progress-text').innerText = `0 / ${quizQuestions.length}`;
+      document.getElementById('quiz-progress-bar').style.width = '0%';
+      renderQuiz();
+    }
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      renderFlashcards();
+      renderQuiz();
+    };
+  </script>
+</body>
+</html>
